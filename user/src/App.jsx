@@ -1,10 +1,18 @@
-import React from 'react'
-
+import React, { useContext } from 'react'
+import Navbar from './components/Navbar'
+import {AppContext} from './context/AppContext'
+import Sidebar from './components/Sidebar'
+import { Route,Routes,  useNavigate } from 'react-router-dom'
+import Dashboard from './pages/Dashboard'
 const App = () => {
+  const {darkMode}=useContext(AppContext)
+  const navigate=useNavigate()
   return (
-    <div className='min-h-screen bg-slate-50 p-8'>
-      <h1 className='text-5xl font-extrabold text-blue-600 underline'>Hello World</h1>
-      <p className='mt-4 text-lg text-slate-700'>If this is styled, Tailwind is working.</p>
+    <div className={`${darkMode?'bg-dark/92 text-white' : 'bg-light/95'} min-h-screen p-1`}>
+      <Navbar/>
+      <Routes>
+        <Route path='/' element={<Dashboard/>}/>
+      </Routes>
     </div>
   )
 }
