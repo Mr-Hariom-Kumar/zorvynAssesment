@@ -4,6 +4,7 @@ import { AppContext } from './context/AppContext'
 import { Route, Routes } from 'react-router-dom'
 import Dashboard from './pages/Dashboard'
 import Transaction from './pages/Transaction'
+import Insight from './pages/Insight'
 
 const App = () => {
   const { darkMode } = useContext(AppContext)
@@ -15,6 +16,7 @@ const App = () => {
         <Routes>
           <Route path='/' element={<Dashboard />} />
           <Route path='/transaction' element={<Transaction />} />
+          <Route path='/insights' element={<Insight />} />
         </Routes>
       </div>
     </div>

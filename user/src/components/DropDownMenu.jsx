@@ -1,60 +1,63 @@
-// DropdownMenu.jsx
 import * as React from 'react';
-import { styled, alpha } from '@mui/material/styles';
-import Button from '@mui/material/Button';
+import { styled } from '@mui/material/styles';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Divider from '@mui/material/Divider';
-import EditIcon from '@mui/icons-material/Edit';
-import FileCopyIcon from '@mui/icons-material/FileCopy';
 import ArchiveIcon from '@mui/icons-material/Archive';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { AppContext } from '../context/AppContext';
 
 const StyledMenu = styled((props) => (
   <Menu
     elevation={0}
-    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-    transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+    anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+    transformOrigin={{ vertical: 'bottom', horizontal: 'right' }}
     {...props}
   />
 ))(({ theme }) => ({
   '& .MuiPaper-root': {
-    borderRadius: 6,
+    borderRadius: 8,
     marginTop: theme.spacing(1),
-    minWidth: 180,
+    minWidth: 160,
     boxShadow:
-      'rgba(0,0,0,0.1) 0px 10px 15px -3px, rgba(0,0,0,0.05) 0px 4px 6px -2px',
+      'rgba(0,0,0,0.2) 0px 8px 20px',
   },
 }));
 
-const DropdownMenu = () => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
+const DropdownMenu = ({ anchorEl, setAnchorEl }) => {
+  const open = Boolean(anchorEl)
+
+  const { admin, setAdmin, token, setToken } =
+    React.useContext(AppContext)
 
   return (
-    <div>
-      <Button onClick={(e) => setAnchorEl(e.currentTarget)} endIcon={<KeyboardArrowDownIcon />}>
-        Options
-      </Button>
+    <StyledMenu
+      anchorEl={anchorEl}
+      open={open}
+      onClose={() => setAnchorEl(null)}
+    >
+      <MenuItem
+        onClick={() => {
+          setAdmin(!admin)
+          setAnchorEl(null)
+        }}
+      >
+        <i className="fa-solid fa-user-tie mr-2" />
+        {admin ? 'Switch to User' : 'Switch to Admin'}
+      </MenuItem>
 
-      <StyledMenu anchorEl={anchorEl} open={open} onClose={() => setAnchorEl(null)}>
-        <MenuItem onClick={() => setAnchorEl(null)}>
-          <EditIcon /> Edit
-        </MenuItem>
-        <MenuItem onClick={() => setAnchorEl(null)}>
-          <FileCopyIcon /> Duplicate
-        </MenuItem>
-        <Divider />
-        <MenuItem onClick={() => setAnchorEl(null)}>
-          <ArchiveIcon /> Archive
-        </MenuItem>
-        <MenuItem onClick={() => setAnchorEl(null)}>
-          <MoreHorizIcon /> More
-        </MenuItem>
-      </StyledMenu>
-    </div>
-  );
-};
+      <Divider />
 
-export default DropdownMenu;
+      <MenuItem
+        onClick={() => {
+          setToken(!token)
+          setAnchorEl(null)
+        }}
+      >
+        <ArchiveIcon sx={{ mr: 1 }} />
+        {token ? 'Logout' : 'Login/Signup'}
+      </MenuItem>
+    </StyledMenu>
+  )
+}
+
+export default DropdownMenu

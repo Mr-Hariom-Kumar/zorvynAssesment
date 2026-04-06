@@ -31,15 +31,44 @@ const Transaction = () => {
     })
 
 //exportcsv logic 
+const exportToCSV = (data) => {
+  if (!data || data.length === 0) return
 
+  const headers = ['TxnId', 'Description', 'Category', 'Date', 'Amount', 'Type']
+
+  const rows = data.map((t) => [
+    t.id,
+    t.description,
+    t.category,
+    new Date(t.date).toLocaleDateString(),
+    t.amount,
+    t.type,
+  ])
+
+  const csvContent =
+    [headers, ...rows]
+      .map((row) => row.join(','))
+      .join('\n')
+
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+  const url = URL.createObjectURL(blob)
+
+  const link = document.createElement('a')
+  link.href = url
+  link.setAttribute('download', 'transactions.csv')
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+}
 
   return (
     <div className="flex min-h-screen overflow-x-hidden">
       <Sidebar />
 
       <div className="px-3 py-4 flex flex-col w-full min-w-0">
-        <div className="w-full flex">
+        <div className="w-full flex justify-between px-">
           <p className="font-semibold text-2xl">Transactions</p>
+          <button onClick={()=>exportToCSV(filteredData)} className='bg-green-600 px-3 py-2 font-semibold text-white rounded-lg shadow-2xl cursor-pointer hover:px-2 duration-75'>Export CSV</button>
         </div>
 
         {/* Filter bar */}
