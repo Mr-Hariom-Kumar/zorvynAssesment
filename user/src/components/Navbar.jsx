@@ -47,8 +47,16 @@ const Navbar = () => {
           </div>
 
           {/* Auth UI */}
-        
+          {token ? (
             <AccountCircleIcon sx={{ fontSize: 36 }} />
+          ) : (
+            <button
+              onClick={() => setToken(true)}
+              className={`${darkMode ? 'bg-white text-black' : 'bg-black text-white'} px-3 py-2 rounded-lg font-semibold hidden md:block`}
+            >
+              Create Account
+            </button>
+          )}
         </div>
       </div>
 
@@ -72,7 +80,7 @@ const Navbar = () => {
               <NavLink onClick={() => setShowMobileMenu(false)} to="/"><p className="px-4 py-3 rounded hover:bg-blue-500/10">
             
               {
-                admin ? 'WELCOME ADMIN' :  'WELCOME USER' 
+                admin ? 'WELCOME ADMIN' : token ? 'WELCOME USER' : ''
                 
               }
               </p></NavLink>
@@ -83,7 +91,21 @@ const Navbar = () => {
               <NavLink onClick={() => setShowMobileMenu(false)} to="/"><p className="px-4 py-3 rounded hover:bg-blue-500/10">Help & Contact</p></NavLink>
 
               {/* ✅ Auth button fixed */}
-              
+              <div className="mt-4 px-4">
+                <button
+                  onClick={() => {
+                    if (token) {
+                      setToken(false)   // logout
+                    } else {
+                      setToken(true)    // login
+                    }
+                    setShowMobileMenu(false)
+                  }}
+                  className={`w-full py-2 rounded-lg font-semibold ${darkMode ? 'bg-white text-black' : 'bg-black text-white'}`}
+                >
+                  {token ? 'Logout' : 'Create Account'}
+                </button>
+              </div>
             </ul>
 
             {/* BOTTOM SETTINGS */}
