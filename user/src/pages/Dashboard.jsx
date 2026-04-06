@@ -23,7 +23,7 @@ const Dashboard = () => {
       {/* Main content */}
       <div className="w-full min-w-0 px-3 py-4 flex flex-col">
 
-        {/* Summary cards — stack on mobile, row on sm+ */}
+        {/* Summary cards-mobile*/}
         <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4">
           {cards.map(({ title, value, sub }) => (
             <div

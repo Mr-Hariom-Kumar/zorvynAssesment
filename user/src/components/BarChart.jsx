@@ -6,7 +6,7 @@ import { AppContext } from '../context/AppContext';
 export default function TickPlacementBars() {
   const { darkMode } = React.useContext(AppContext);
   const textColor = darkMode ? '#ffffff' : '#000000';
-
+  
   const {selectedYear, setSelectedYear} = React.useContext(AppContext);
 
   // Find the data array for the selected year

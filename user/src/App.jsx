@@ -3,6 +3,7 @@ import Navbar from './components/Navbar'
 import { AppContext } from './context/AppContext'
 import { Route, Routes } from 'react-router-dom'
 import Dashboard from './pages/Dashboard'
+import Transaction from './pages/Transaction'
 
 const App = () => {
   const { darkMode } = useContext(AppContext)
@@ -13,6 +14,7 @@ const App = () => {
       <div className="pt-15">
         <Routes>
           <Route path='/' element={<Dashboard />} />
+          <Route path='/transaction' element={<Transaction />} />
         </Routes>
       </div>
     </div>
