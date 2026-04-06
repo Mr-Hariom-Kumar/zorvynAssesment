@@ -36,8 +36,8 @@ It’s just to simulate how auth works in real apps.
 
 There are two roles:
 
-* **User** → can view everything
-* **Admin** → can delete transactions
+* **User** >> can view everything
+* **Admin** >> can delete transactions
 
 Admin is just a toggle (for testing UI behavior).
 
@@ -47,9 +47,9 @@ Admin is just a toggle (for testing UI behavior).
 
 Charts are built using MUI:
 
-* Line chart → income vs expenses
-* Bar chart → savings
-* Pie chart → spending breakdown
+* Line chart >> income vs expenses
+* Bar chart >> savings
+* Pie chart >> spending breakdown
 
 You can also switch between years.
 
