@@ -89,7 +89,7 @@ No backend — focus was purely frontend logic + UI.
 
 ```bash
 git clone "https://github.com/Mr-Hariom-Kumar/zorvynAssesment.git"
-cd finance-dashboard
+cd user
 npm install
 npm install @mui/material @mui/icons-material @mui/x-charts
 npm run dev
