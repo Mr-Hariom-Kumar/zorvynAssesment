@@ -1,56 +1,46 @@
 import * as React from 'react';
-import Stack from '@mui/material/Stack';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Radio from '@mui/material/Radio';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { dataset, valueFormatter } from '../dataset/data';
 import { AppContext } from '../context/AppContext';
 
-function TickParamsSelector({
-  tickPlacement,
-  tickLabelPlacement,
-  setTickPlacement,
-  setTickLabelPlacement,
-}) {
-  return (
-    <Stack direction="column" justifyContent="space-between" sx={{ width: '100%' }}>
-     
-    </Stack>
-  );
-}
-
-const chartSetting = {
-  yAxis: [
-    {
-      label: 'rainfall (mm)',
-      width: 60,
-    },
-  ],
-  series: [{ dataKey: 'seoul', label: 'Seoul rainfall', valueFormatter }],
-  height: 300,
-  margin: { left: 0 },
-};
-
 export default function TickPlacementBars() {
-  const [tickPlacement, setTickPlacement] = React.useState('middle');
-  const [tickLabelPlacement, setTickLabelPlacement] = React.useState('middle');
-     const {darkMode,setDarkMode}=React.useContext(AppContext)
+  const { darkMode } = React.useContext(AppContext);
+  const textColor = darkMode ? '#ffffff' : '#000000';
+
+  const chartSetting = {
+    yAxis: [{ label: 'Amount (₹)', width: 70 }],
+    series: [
+      {
+        dataKey: 'income',
+        label: 'Income',
+        valueFormatter,
+        color: darkMode ? '#9ca3af' : '#363636',
+      },
+      {
+        dataKey: 'expenses',
+        label: 'Expenses',
+        valueFormatter,
+        color: '#ef4444',
+      },
+      {
+        dataKey: 'balance',
+        label: 'Balance',
+        valueFormatter,
+        color: '#3E50EF',
+      },
+    ],
+    height: 300,
+  };
+
   return (
     <div style={{ width: '100%' }}>
-      <TickParamsSelector
-        tickPlacement={tickPlacement}
-        tickLabelPlacement={tickLabelPlacement}
-        setTickPlacement={setTickPlacement}
-        setTickLabelPlacement={setTickLabelPlacement}
-      />
       <BarChart
         dataset={dataset}
-        xAxis={[{ dataKey: 'month', tickPlacement, tickLabelPlacement }]}
+        xAxis={[{ dataKey: 'month', scaleType: 'band' }]}
         {...chartSetting}
         sx={{
+            '& text': { fill: textColor, fontWeight: 600 },
+            '& .MuiChartsLegend-label': { color: textColor },
           '& .MuiChartsAxis-label': {
             fill: darkMode ? 'white' : 'black',
             fontWeight: 600,
