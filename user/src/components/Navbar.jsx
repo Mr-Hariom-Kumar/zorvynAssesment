@@ -13,7 +13,7 @@ const Navbar = () => {
   const [showMobileMenu, setShowMobileMenu] = useState(false)
   const [menuAnchor, setMenuAnchor] = useState(null)
 
-  const { token, setToken, darkMode, setDarkMode } = useContext(AppContext)
+  const { token, admin,setToken, darkMode, setDarkMode } = useContext(AppContext)
 
   return (
     <>
@@ -30,7 +30,7 @@ const Navbar = () => {
         />
 
         <ul className="hidden md:flex items-center gap-5 font-medium">
-          <NavLink to="/"><li>LOGO</li></NavLink>
+          <NavLink to="/"><li>ZORVYN</li></NavLink>
           <NavLink to="/"><li>Home</li></NavLink>
           <NavLink to="/"><li>Services</li></NavLink>
           <NavLink to="/"><li>About</li></NavLink>
@@ -38,6 +38,7 @@ const Navbar = () => {
         </ul>
 
         <div className="flex items-center gap-4">
+          {/* Dark mode */}
           <div
             onClick={() => setDarkMode(!darkMode)}
             className="cursor-pointer border py-1 px-1 rounded-full"
@@ -45,6 +46,7 @@ const Navbar = () => {
             {darkMode ? <DarkModeOutlinedIcon /> : <DarkModeIcon />}
           </div>
 
+          {/* Auth UI */}
           {token ? (
             <AccountCircleIcon sx={{ fontSize: 36 }} />
           ) : (
@@ -66,7 +68,7 @@ const Navbar = () => {
 
           {/* Header */}
           <div className="flex items-center justify-between px-5 py-6 border-b border-gray-500/20">
-            <span className="font-bold text-lg">LOGO</span>
+            <span className="font-bold text-lg">ZORVYN</span>
             <CloseIcon onClick={() => setShowMobileMenu(false)} className="cursor-pointer" />
           </div>
 
@@ -75,15 +77,30 @@ const Navbar = () => {
 
             {/* TOP */}
             <ul className="flex flex-col gap-1 mt-4 px-3 text-base font-medium">
+              <NavLink onClick={() => setShowMobileMenu(false)} to="/"><p className="px-4 py-3 rounded hover:bg-blue-500/10">
+            
+              {
+                admin ? 'WELCOME ADMIN' : token ? 'WELCOME USER' : ''
+                
+              }
+              </p></NavLink>
               <NavLink onClick={() => setShowMobileMenu(false)} to="/"><p className="px-4 py-3 rounded hover:bg-blue-500/10">Home</p></NavLink>
               <NavLink onClick={() => setShowMobileMenu(false)} to="/transaction"><p className="px-4 py-3 rounded hover:bg-blue-500/10">Transactions</p></NavLink>
               <NavLink onClick={() => setShowMobileMenu(false)} to="/insights"><p className="px-4 py-3 rounded hover:bg-blue-500/10">Insights</p></NavLink>
               <NavLink onClick={() => setShowMobileMenu(false)} to="/"><p className="px-4 py-3 rounded hover:bg-blue-500/10">About</p></NavLink>
               <NavLink onClick={() => setShowMobileMenu(false)} to="/"><p className="px-4 py-3 rounded hover:bg-blue-500/10">Help & Contact</p></NavLink>
 
+              {/* ✅ Auth button fixed */}
               <div className="mt-4 px-4">
                 <button
-                  onClick={() => { setToken(!token); setShowMobileMenu(false) }}
+                  onClick={() => {
+                    if (token) {
+                      setToken(false)   // logout
+                    } else {
+                      setToken(true)    // login
+                    }
+                    setShowMobileMenu(false)
+                  }}
                   className={`w-full py-2 rounded-lg font-semibold ${darkMode ? 'bg-white text-black' : 'bg-black text-white'}`}
                 >
                   {token ? 'Logout' : 'Create Account'}
@@ -91,17 +108,17 @@ const Navbar = () => {
               </div>
             </ul>
 
-            {/* 🔥 BOTTOM SETTINGS */}
+            {/* BOTTOM SETTINGS */}
             <div className="px-4 py-5 flex items-center gap-3 border-t border-gray-500/20">
               <div
-  onClick={(e) => setMenuAnchor(e.currentTarget)}
-  className="flex items-center gap-3 cursor-pointer hover:opacity-80"
->
-  <i className="fa-solid fa-gear text-lg" />
-  <span className="font-medium">Settings</span>
-</div>
+                onClick={(e) => setMenuAnchor(e.currentTarget)}
+                className="flex items-center gap-3 cursor-pointer hover:opacity-80"
+              >
+                <i className="fa-solid fa-gear text-lg" />
+                <span className="font-medium">Settings</span>
+              </div>
 
-<DropdownMenu anchorEl={menuAnchor} setAnchorEl={setMenuAnchor} />
+              <DropdownMenu anchorEl={menuAnchor} setAnchorEl={setMenuAnchor} />
             </div>
 
           </div>

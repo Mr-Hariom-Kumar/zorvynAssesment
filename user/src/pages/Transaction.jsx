@@ -6,218 +6,155 @@ import CallMadeIcon from '@mui/icons-material/CallMade'
 import CallReceivedIcon from '@mui/icons-material/CallReceived'
 
 const Transaction = () => {
-  const { darkMode } = useContext(AppContext)
+  const { darkMode, admin } = useContext(AppContext)
+
   const [search, setSearch] = useState('')
   const [sortByTime, setSortByTime] = useState('')
   const [sortByUse, setSortByUse] = useState('')
+  const [data, setData] = useState(transactionsData)
 
-  //filter logic
-  const filteredData = transactionsData
-    .filter((t) => {
-      return t.id.toString().includes(search.trim())
-    })
+
+  const handleDelete = (id) => {
+    setData(prev => prev.filter(t => t.id !== id))
+  }
+
+
+  const filteredData = data
+    .filter((t) => t.id.toString().includes(search.trim()))
     .filter((t) => {
       if (sortByUse === 'null' || sortByUse === '') return true
       return t.type === sortByUse
     })
     .sort((a, b) => {
-      if (sortByTime === 'latest') {
-        return new Date(b.date) - new Date(a.date)
-      }
-      if (sortByTime === 'oldest') {
-        return new Date(a.date) - new Date(b.date)
-      }
+      if (sortByTime === 'latest') return new Date(b.date) - new Date(a.date)
+      if (sortByTime === 'oldest') return new Date(a.date) - new Date(b.date)
       return 0
     })
 
-//exportcsv logic 
-const exportToCSV = (data) => {
-  if (!data || data.length === 0) return
 
-  const headers = ['TxnId', 'Description', 'Category', 'Date', 'Amount', 'Type']
+  const exportToCSV = (data) => {
+    if (!data.length) return
 
-  const rows = data.map((t) => [
-    t.id,
-    t.description,
-    t.category,
-    new Date(t.date).toLocaleDateString(),
-    t.amount,
-    t.type,
-  ])
+    const headers = ['TxnId', 'Description', 'Category', 'Date', 'Amount', 'Type']
 
-  const csvContent =
-    [headers, ...rows]
-      .map((row) => row.join(','))
-      .join('\n')
+    const rows = data.map((t) => [
+      t.id,
+      `"${t.description}"`,
+      `"${t.category}"`,
+      new Date(t.date).toLocaleDateString(),
+      t.amount,
+      t.type,
+    ])
 
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
-  const url = URL.createObjectURL(blob)
+    const csvContent = [headers, ...rows].map(row => row.join(',')).join('\n')
 
-  const link = document.createElement('a')
-  link.href = url
-  link.setAttribute('download', 'transactions.csv')
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
-}
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', 'transactions.csv')
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
 
   return (
     <div className="flex min-h-screen overflow-x-hidden">
       <Sidebar />
 
       <div className="px-3 py-4 flex flex-col w-full min-w-0">
-        <div className="w-full flex justify-between px-">
+        
+        {/* HEADER */}
+        <div className="w-full flex justify-between">
           <p className="font-semibold text-2xl">Transactions</p>
-          <button onClick={()=>exportToCSV(filteredData)} className='bg-green-600 px-3 py-2 font-semibold text-white rounded-lg shadow-2xl cursor-pointer hover:px-2 duration-75'>Export CSV</button>
+
+          <button
+            onClick={() => exportToCSV(filteredData)}
+            className="bg-green-600 px-3 py-2 text-white rounded-lg shadow-2xl"
+          >
+            Export CSV
+          </button>
         </div>
 
-        {/* Filter bar */}
-        <div className="py-3 flex flex-wrap items-center justify-between gap-3 w-full">
+        {/* FILTER */}
+        <div className="py-3 flex flex-wrap items-center justify-between gap-3">
 
-          {/* Sort by time */}
-          <span className="flex items-center gap-2 font-semibold">
-            <label htmlFor="time">Sort by:</label>
-            <select
-              name="time"
-              id="time"
-              value={sortByTime}
-              onChange={(e) => setSortByTime(e.target.value)}
-              className={`px-2 py-1 rounded-md text-sm border cursor-pointer
-                focus:outline-none focus:ring-0
-                ${darkMode ? 'bg-dark text-white border-gray-600' : 'bg-light text-black border-gray-300'}`}
-            >
-              <option value="null">------</option>
-              <option value="latest">Latest</option>
-              <option value="oldest">Oldest</option>
-            </select>
-          </span>
-
-          {/* Sort by type */}
-          <span className="flex items-center gap-2 font-semibold">
-            <label htmlFor="use">Sort by:</label>
-            <select
-              name="use"
-              id="use"
-              value={sortByUse}
-              onChange={(e) => setSortByUse(e.target.value)}
-              className={`px-2 py-1 rounded-md text-sm border cursor-pointer
-                focus:outline-none focus:ring-0
-                ${darkMode ? 'bg-dark text-white border-gray-600' : 'bg-light text-black border-gray-300'}`}
-            >
-              <option value="null">------</option>
-              <option value="expense">Expense</option>
-              <option value="income">Income</option>
-            </select>
-          </span>
-
-          {/* Search */}
-          <span
-            className={`flex items-center gap-0 rounded-lg border shadow-md overflow-hidden
-            ${darkMode ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-300'}`}
+          <select
+            value={sortByTime}
+            onChange={(e) => setSortByTime(e.target.value)}
+            className={`${darkMode ? 'bg-dark text-white' : 'bg-light'} px-2 py-1 border rounded`}
           >
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by txn id"
-              className={`py-1 px-3 text-sm bg-transparent focus:outline-none focus:ring-0 w-44 sm:w-56
-                ${darkMode ? 'text-white placeholder-gray-400' : 'text-black placeholder-gray-400'}`}
-            />
-            <button
-              className={`px-3 py-1.5 border-l cursor-pointer
-              ${darkMode ? 'border-gray-600 text-white hover:bg-gray-700' : 'border-gray-300 text-black hover:bg-gray-100'}`}
-            >
-              <i className="fa-solid fa-magnifying-glass text-sm"></i>
-            </button>
-          </span>
+            <option value="null">Sort by Time</option>
+            <option value="latest">Latest</option>
+            <option value="oldest">Oldest</option>
+          </select>
+
+          <select
+            value={sortByUse}
+            onChange={(e) => setSortByUse(e.target.value)}
+            className={`${darkMode ? 'bg-dark text-white' : 'bg-light'} px-2 py-1 border rounded`}
+          >
+            <option value="null">Type</option>
+            <option value="expense">Expense</option>
+            <option value="income">Income</option>
+          </select>
+
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search by txn id"
+            className="px-3 py-1 border rounded"
+          />
         </div>
 
-        {/* Table */}
-        <div
-          className={`rounded-lg p-4 ${darkMode ? 'bg-dark' : 'bg-light'} shadow-2xl max-md:overflow-x-auto max-md:text-sm`}
-        >
-          {/* Header */}
-          <div
-            className={`grid min-w-[600px] grid-cols-[40px_1fr_80px_80px_80px_80px] 
-            md:grid-cols-[45px_0.9fr_90px_90px_90px_90px]
-            items-center gap-3 ${
-              darkMode ? 'text-white' : 'text-black'
-            } text-md px-2 py-2 border-b border-gray-600/30 `}
-          >
-            <div>TxnId</div>
+        {/* TABLE */}
+        <div className={`${darkMode ? 'bg-dark' : 'bg-light'} rounded-lg p-4 shadow-2xl max-md:overflow-x-auto`}>
+
+          {/* HEADER */}
+          <div className="grid min-w-[600px] grid-cols-[40px_1fr_80px_80px_80px_100px] font-semibold border-b pb-2">
+            <div>ID</div>
             <div>Description</div>
             <div>Category</div>
             <div>Date</div>
-            <div className="text-right max-md:text-center">Amount</div>
-            <div className="text-right max-md:text-center">Type</div>
+            <div className="text-right">Amount</div>
+            <div className="text-right">Type</div>
           </div>
 
-          {/* Rows */}
+          {/* ROWS */}
           {filteredData.map((t) => (
             <div
               key={t.id}
-              className={`grid min-w-[600px] grid-cols-[40px_1fr_80px_80px_80px_80px] 
-              md:grid-cols-[45px_0.9fr_90px_90px_90px_90px]
-              items-center gap-3 px-2 py-3 rounded-md transition
-              ${darkMode ? 'hover:bg-gray-800/40' : 'hover:bg-gray-100'}`}
+              className="grid min-w-[600px] grid-cols-[40px_1fr_80px_80px_80px_100px] py-3 items-center"
             >
-              {/* id */}
-              <div className="text-lg">{t.id}</div>
+              <div>{t.id}</div>
 
-              {/* description */}
-              <div className={`${darkMode ? 'text-white' : 'text-black'} font-medium`}>
-                <span className="flex gap-1 items-center">
-                  <div
-                    className={`text-lg ${
-                      t.type === 'expense'
-                        ? 'text-red-700/95'
-                        : 'text-green-600'
-                    }`}
-                  >
-                    {t.type === 'expense' ? (
-                      <CallMadeIcon />
-                    ) : (
-                      <CallReceivedIcon />
-                    )}
-                  </div>
-                  <p>{t.description}</p>
-                </span>
+              <div className="flex items-center gap-2">
+                {t.type === 'expense' ? <CallMadeIcon className='text-green-500' /> : <CallReceivedIcon className='text-red-500' />}
+                {t.description}
               </div>
 
-              {/* category */}
-              <div className="text-gray-400">{t.category}</div>
+              <div>{t.category}</div>
+              <div>{new Date(t.date).toLocaleDateString()}</div>
 
-              {/* date */}
-              <div className="text-gray-400 text-sm">
-                {new Date(t.date).toLocaleDateString()}
-              </div>
-
-              {/* amount */}
-              <div
-                className={`text-right font-semibold ${
-                  t.type === 'expense'
-                    ? 'text-red-500'
-                    : 'text-green-500'
-                }`}
-              >
+              <div className={`text-right ${t.type === 'expense' ? 'text-red-500' : 'text-green-500'}`}>
                 ₹{t.amount}
               </div>
 
-              {/* type */}
-              <div className="text-right">
-                <span
-                  className={`px-2 py-1 text-xs rounded-md ${
-                    t.type === 'expense'
-                      ? 'bg-red-500/20 text-red-500'
-                      : 'bg-green-500/20 text-green-500'
-                  }`}
-                >
-                  {t.type}
-                </span>
+              <div className="flex justify-end gap-2 items-center">
+                <span className="text-xs">{t.type}</span>
+
+                {admin && (
+                  <i
+                    onClick={() => handleDelete(t.id)}
+                    className="fa-solid fa-trash text-red-500 cursor-pointer"
+                  />
+                )}
               </div>
             </div>
           ))}
         </div>
+
       </div>
     </div>
   )
