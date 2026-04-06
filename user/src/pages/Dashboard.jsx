@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Sidebar from '../components/Sidebar'
 import { AppContext } from '../context/AppContext'
 import BarChart from '../components/BarChart'
@@ -7,7 +7,7 @@ import { dataset } from '../dataset/data'
 
 const Dashboard = () => {
   const { darkMode } = useContext(AppContext)
-  const {selectedYear,setSelectedYear}=useContext(AppContext)
+  const {selectedYear,setSelectedYear,token,admin}=useContext(AppContext)
   const yearData = dataset.find((d) => d.year === selectedYear)?.data 
     || dataset[dataset.length - 1].data
   const latest = yearData[yearData.length - 1];
@@ -16,13 +16,21 @@ const Dashboard = () => {
     { title: 'Monthly Expenses',  value: `₹${(latest.expenses / 1000).toFixed(0)}k`, sub: 'This month' },
     { title: 'Monthly Income',    value: `₹${(latest.income / 1000).toFixed(0)}k`,   sub: 'This month' },
   ]
+  useEffect(() => {
+  if (admin) {
+    alert('Welcome Admin')
+  } else if (token) {
+    alert('Welcome User')
+  } else {
+    alert('You are not signed in')
+  }
+}, [])
   return (
     <div className="flex min-h-screen overflow-x-hidden">
       <Sidebar />
 
       {/* Main content */}
       <div className="w-full min-w-0 px-3 py-4 flex flex-col">
-
         {/* Summary cards-mobile*/}
         <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4">
           {cards.map(({ title, value, sub }) => (

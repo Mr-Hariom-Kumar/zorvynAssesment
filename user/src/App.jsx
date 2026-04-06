@@ -7,14 +7,15 @@ import Transaction from './pages/Transaction'
 import Insight from './pages/Insight'
 
 const App = () => {
-  const { darkMode } = useContext(AppContext)
+  const { darkMode,token,admin } = useContext(AppContext)
+
 
   return (
     <div className={`${darkMode ? 'bg-dark/92 text-white' : 'bg-light/95'} min-h-screen overflow-x-hidden`}>
       <Navbar />
       <div className="pt-15">
         <Routes>
-          <Route path='/' element={<Dashboard />} />
+          {token || admin ? <Route path='/' element={<Dashboard/>}/>:<Route path='/' element={<Dashboard />} />}
           <Route path='/transaction' element={<Transaction />} />
           <Route path='/insights' element={<Insight />} />
         </Routes>
